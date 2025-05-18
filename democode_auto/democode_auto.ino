@@ -1,4 +1,11 @@
 #include <EEPROM.h>
+
+// libs voor gyrosensor:
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
+
+
 struct sensorReading {
   long millis;
   int value;
@@ -27,6 +34,11 @@ const uint8_t in1_b = 2; // rood
 
 const uint8_t sensorPin = A0; // Analoge pin voor de sensor
 const uint8_t eepromSize = 2; // Grootte van de EEPROM op de Arduino Uno
+
+// pins voor gyro / accelerometer
+const uint8_t sda = A4;
+const uint8_t scl = A5;
+
 #pragma endregion Pindefinitions
 
 // Hieronder de PWM waarden voor de trage en snelle snelheden, deze mag je niet aanpassen enkel gebruiken
@@ -38,16 +50,25 @@ uint8_t currentSpeed = 0;
 
 // hieronder de snelheid waarmee gedraaid word en de tijd nodig om te draaien. Deze tijd kan afhankelijk van de ondergrond en het wagentje moeten worden aangepast zodat een mooie 90 graden gedraaid wordt
 const uint8_t turningSpeed = 127;
-const long turningTime = 1520;
+const long turningTime = 715;
 
 // Deze waarde bevat de totale sensorwaarde van de sensor aangesloten op de sensorpin
 const int maxNumberOfReadings = 200;
 sensorReading sensorValues[maxNumberOfReadings];
 int readingIndex = 0;
 
+// voor funtionering gyro sensor
+Adafruit_MPU6050 mpu;
+
+long previousTime = 0;
+float elapsedTime;
+
+float yaw = 0; // Angle around the Z-axis (yaw)
+
 void setup() {
+  
   // For Debugging purposes
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial);
   // EEPROM leegmaken
   // for (int i = 0; i < eepromSize; i++) {
@@ -77,21 +98,25 @@ void setup() {
   digitalWrite(in2_b, LOW);
   digitalWrite(in3_b, LOW);
   digitalWrite(in4_b, LOW);
-  // put your setup code here, to run once:
   
+  
+  // Initialize MPU6050
+  if (!mpu.begin()) {
+    Serial.println("Failed to find MPU6050 chip");
+    exit(1);
+  } 
+  Serial.println("MPU6050 Found!");
+
+  mpu.setGyroRange(0);
+
+  previousTime = micros();
 
 }
 
 void loop() {
-     // je code begint hieronder
-     // hieronder een klein voorbeeld
-     // je wist deze code en programmeert je eigen pad
-     drive(highSpeed, 100);
-     left()
-     drive(lowSpeed, 120);
-     // je code eindigt hierboven
-      saveSensorValueToEEPROM();
-      while(true);
+  readGyro();
+  saveSensorValueToEEPROM();
+      
 }
 
 
@@ -214,6 +239,35 @@ void readSensor(){
     s.speed = currentSpeed;
     sensorValues[readingIndex] = s;
     readingIndex++;
+}
+
+void readGyro(){
+  // Get new sensor events (accelerometer and gyroscope)
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+
+  // Calculate elapsed time
+  long currentTime = micros();
+  elapsedTime = (currentTime - previousTime) / 1000000.0; // seconds
+  previousTime = currentTime;
+
+  // Gyroscope readings are in rad/s (radians per second)
+  // The 'g' event contains gyroscope data: g.gyro.x, g.gyro.y, g.gyro.z
+  // We are interested in rotation around the Z-axis, which is g.gyro.z
+  
+  float yawRate = g.gyro.z * 180 / PI; // Convert radians/second to degrees/second
+
+  // Integrate the yaw rate to get the yaw angle
+  yaw += yawRate * elapsedTime;
+
+  /* for debugging
+
+  Serial.print("Yaw Angle (Z-axis): ");
+  Serial.print(yaw);
+  Serial.println(" degrees");
+
+  */
+  delay(10);
 }
 
 void saveSensorValueToEEPROM(){
