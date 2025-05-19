@@ -115,6 +115,8 @@ void setup() {
 
 void loop() {
   readGyro();
+  delay(10000);
+  turnDegrees(90);
   saveSensorValueToEEPROM();
       
 }
@@ -216,6 +218,47 @@ void setSpeed(uint8_t speed){
   currentSpeed = speed;
 }
 
+void turnDegrees(int target_yaw){
+  yaw = 0;
+  readGyro();
+  setSpeed(turningSpeed);
+  while( (target_yaw - 10) < yaw < (target_yaw + 10)){
+    if (yaw < target_yaw){
+      digitalWrite(in1_f, LOW);
+      digitalWrite(in2_f, HIGH);
+      digitalWrite(in3_f, LOW);
+      digitalWrite(in4_f, HIGH);
+
+      digitalWrite(in1_b, LOW);
+      digitalWrite(in2_b, HIGH);
+      digitalWrite(in3_b, LOW);
+      digitalWrite(in4_b, HIGH);
+    }
+
+    if(yaw > target_yaw){
+      digitalWrite(in1_f, HIGH);
+      digitalWrite(in2_f, LOW);
+      digitalWrite(in3_f, HIGH);
+      digitalWrite(in4_f, LOW);
+
+      digitalWrite(in1_b, HIGH);
+      digitalWrite(in2_b, LOW);
+      digitalWrite(in3_b, HIGH);
+      digitalWrite(in4_b, LOW);
+    }
+    readGyro();
+  }
+  digitalWrite(in1_f, LOW);
+  digitalWrite(in2_f, LOW);
+  digitalWrite(in3_f, LOW);
+  digitalWrite(in4_f, LOW);
+
+  digitalWrite(in1_b, LOW);
+  digitalWrite(in2_b, LOW);
+  digitalWrite(in3_b, LOW);
+  digitalWrite(in4_b, LOW);
+}
+
 /**
 * Voert een delay uit terwijl de sensorwaarden blijven uitgelezen worden.
 */
@@ -260,7 +303,7 @@ void readGyro(){
   // Integrate the yaw rate to get the yaw angle
   yaw += yawRate * elapsedTime;
 
-  /* for debugging
+  /*for debugging
 
   Serial.print("Yaw Angle (Z-axis): ");
   Serial.print(yaw);
