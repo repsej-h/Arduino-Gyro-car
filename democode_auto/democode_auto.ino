@@ -101,14 +101,14 @@ void setup() {
   
   
   // Initialize MPU6050
-  if (!mpu.begin()) {
+  /*if (!mpu.begin()) {
     Serial.println("Failed to find MPU6050 chip");
     exit(1);
   } 
   Serial.println("MPU6050 Found!");
-
+  
   mpu.setGyroRange(0);
-
+  */
   previousTime = micros();
 
 }
