@@ -115,7 +115,9 @@ void setup() {
 
 void loop() {
   readGyro();
-  saveSensorValueToEEPROM();
+  //saveSensorValueToEEPROM();
+  left();
+  delay(1000);
       
 }
 
@@ -260,13 +262,13 @@ void readGyro(){
   // Integrate the yaw rate to get the yaw angle
   yaw += yawRate * elapsedTime;
 
-  /* for debugging
+  // for debugging
 
   Serial.print("Yaw Angle (Z-axis): ");
   Serial.print(yaw);
   Serial.println(" degrees");
 
-  */
+  
   delay(10);
 }
 
