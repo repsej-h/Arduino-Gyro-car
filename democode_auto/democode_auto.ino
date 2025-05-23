@@ -114,14 +114,88 @@ void setup() {
 }
 
 void loop() {
-  readGyro();
-  //saveSensorValueToEEPROM();
-  left();
+  forwards(200);
   delay(1000);
-      
+  backwards(200);
+  delay(1000);
+  left(200);
+  delay(1000);
+  right(200);
+  delay(1000);
+  stop();
+  delay(1000);
 }
 
+#pragma region Driversfunctions
+void stop(){
+  digitalWrite(in1_f, LOW);
+  digitalWrite(in2_f, LOW);
+  digitalWrite(in3_f, LOW);
+  digitalWrite(in4_f, LOW);
 
+  digitalWrite(in1_b, LOW);
+  digitalWrite(in2_b, LOW);
+  digitalWrite(in3_b, LOW);
+  digitalWrite(in4_b, LOW);
+}
+
+void forwards(int speed){
+  setSpeed(speed);
+    
+  digitalWrite(in1_f, HIGH);
+  digitalWrite(in2_f, LOW);
+  digitalWrite(in3_f, LOW);
+  digitalWrite(in4_f, HIGH);
+
+  digitalWrite(in1_b, LOW);
+  digitalWrite(in2_b, HIGH);
+  digitalWrite(in3_b, HIGH);
+  digitalWrite(in4_b, LOW);
+
+}
+
+void backwards(int speed){
+  setSpeed(speed);
+    
+  digitalWrite(in1_f, LOW);
+  digitalWrite(in2_f, HIGH);
+  digitalWrite(in3_f, HIGH);
+  digitalWrite(in4_f, LOW);
+
+  digitalWrite(in1_b, HIGH);
+  digitalWrite(in2_b, LOW);
+  digitalWrite(in3_b, LOW);
+  digitalWrite(in4_b, HIGH);
+}
+
+void left(int turningSpeed){
+  setSpeed(turningSpeed);
+
+  digitalWrite(in1_f, LOW);
+  digitalWrite(in2_f, HIGH);
+  digitalWrite(in3_f, LOW);
+  digitalWrite(in4_f, HIGH);
+
+  digitalWrite(in1_b, LOW);
+  digitalWrite(in2_b, HIGH);
+  digitalWrite(in3_b, LOW);
+  digitalWrite(in4_b, HIGH);
+}
+
+void right(int turningSpeed){
+  setSpeed(turningSpeed);
+
+  digitalWrite(in1_f, HIGH);
+  digitalWrite(in2_f, LOW);
+  digitalWrite(in3_f, HIGH);
+  digitalWrite(in4_f, LOW);
+
+  digitalWrite(in1_b, HIGH);
+  digitalWrite(in2_b, LOW);
+  digitalWrite(in3_b, HIGH);
+  digitalWrite(in4_b, LOW);
+}
+#pragma endregion Driversfunctions
 #pragma region Helperfunctions
 /**
 * Rijd rechtdoor gedurende [time] milliseconden
@@ -154,7 +228,7 @@ void drive(uint8_t speed, int time){
 /**
 * Draai 90 graden naar links
 */
-void left(){
+void Turnleft(){
   setSpeed(turningSpeed);
 
   digitalWrite(in1_f, LOW);
@@ -183,7 +257,7 @@ void left(){
 /**
 * Draai 90 graden naar rechts
 */
-void right(){
+void Turnright(){
   setSpeed(turningSpeed);
 
   digitalWrite(in1_f, HIGH);
