@@ -114,16 +114,8 @@ void setup() {
 }
 
 void loop() {
-  forwards(200);
-  delay(1000);
-  backwards(200);
-  delay(1000);
-  left(200);
-  delay(1000);
-  right(200);
-  delay(1000);
-  stop();
-  delay(1000);
+  delay(5000);
+  turnDegreesLeft(90);
 }
 
 #pragma region Driversfunctions
@@ -195,7 +187,17 @@ void right(int turningSpeed){
   digitalWrite(in3_b, HIGH);
   digitalWrite(in4_b, LOW);
 }
+
+void turnDegreesLeft(int target){
+  yaw = 0;
+  left(turningSpeed);
+  while(yaw < target){
+    readGyro();
+  }
+  stop();
+}
 #pragma endregion Driversfunctions
+
 #pragma region Helperfunctions
 /**
 * Rijd rechtdoor gedurende [time] milliseconden
