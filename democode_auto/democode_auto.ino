@@ -49,7 +49,7 @@ uint8_t currentSpeed = 0;
 #pragma endregion Drivingspeeds
 
 // hieronder de snelheid waarmee gedraaid word en de tijd nodig om te draaien. Deze tijd kan afhankelijk van de ondergrond en het wagentje moeten worden aangepast zodat een mooie 90 graden gedraaid wordt
-const uint8_t turningSpeed = 127;
+const uint8_t turningSpeed = 75;
 const long turningTime = 715;
 
 // Deze waarde bevat de totale sensorwaarde van de sensor aangesloten op de sensorpin
@@ -115,9 +115,9 @@ void setup() {
 
 void loop() {
   delay(2000);
-  turnDegreesLeft(180);
+  turnDegreesLeft(90);
   delay(2000);
-  turnDegreesRight(270);
+  turnDegreesRight(90);
 }
 
 #pragma region Driversfunctions
