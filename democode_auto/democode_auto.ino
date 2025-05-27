@@ -114,8 +114,10 @@ void setup() {
 }
 
 void loop() {
-  delay(5000);
-  turnDegreesLeft(90);
+  delay(2000);
+  turnDegreesLeft(180);
+  delay(2000);
+  turnDegreesRight(270);
 }
 
 #pragma region Driversfunctions
@@ -192,6 +194,15 @@ void turnDegreesLeft(int target){
   yaw = 0;
   left(turningSpeed);
   while(yaw < target){
+    readGyro();
+  }
+  stop();
+}
+
+void turnDegreesRight(int target){
+  yaw = 0;
+  right(turningSpeed);
+  while(yaw > -target){
     readGyro();
   }
   stop();
