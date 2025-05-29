@@ -30,7 +30,7 @@ const uint8_t enA_b = 10; // bruin
 const uint8_t in4_b = 13; // groen
 const uint8_t in3_b = 12; // geel
 const uint8_t in2_b = 11; // oranje
-const uint8_t in1_b = 2; // rood
+const uint8_t in1_b = A3; // rood
 
 const uint8_t sensorPin = A0; // Analoge pin voor de sensor
 const uint8_t eepromSize = 2; // Grootte van de EEPROM op de Arduino Uno
@@ -38,6 +38,9 @@ const uint8_t eepromSize = 2; // Grootte van de EEPROM op de Arduino Uno
 // pins voor gyro / accelerometer
 const uint8_t sda = A4;
 const uint8_t scl = A5;
+
+// pin for photogate
+const uint8_t photogate = 2;
 
 #pragma endregion Pindefinitions
 
@@ -59,6 +62,9 @@ int readingIndex = 0;
 
 // voor funtionering gyro sensor
 Adafruit_MPU6050 mpu;
+
+
+volatile unsigned int distance_pulses = 0;
 
 long previousTime = 0;
 float elapsedTime;
@@ -88,7 +94,11 @@ void setup() {
   pinMode(in2_b, OUTPUT);
   pinMode(in3_b, OUTPUT);
   pinMode(in4_b, OUTPUT);
-	
+
+  // set up photogate
+  pinMode(photogate, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(photogate), count, FALLING);
+
 	// Turn off motors - Initial state
 	digitalWrite(in1_f, LOW);
 	digitalWrite(in2_f, LOW);
@@ -98,6 +108,9 @@ void setup() {
   digitalWrite(in2_b, LOW);
   digitalWrite(in3_b, LOW);
   digitalWrite(in4_b, LOW);
+
+  // current sensor
+  pinMode(in4_b, OUTPUT);
   
   
   // Initialize MPU6050
@@ -114,10 +127,12 @@ void setup() {
 }
 
 void loop() {
-  delay(2000);
-  turnDegreesLeft(90);
-  delay(2000);
-  turnDegreesRight(90);
+  Serial.println(distance_pulses);
+  delay(100);
+}
+
+void count(){
+  distance_pulses++;
 }
 
 #pragma region Driversfunctions
