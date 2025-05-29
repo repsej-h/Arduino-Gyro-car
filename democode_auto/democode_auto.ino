@@ -63,8 +63,9 @@ int readingIndex = 0;
 // voor funtionering gyro sensor
 Adafruit_MPU6050 mpu;
 
-
-volatile unsigned int distance_pulses = 0;
+// voor afstandsmetingen
+volatile unsigned int distancePulses = 0;
+const int diskslots = 20;  // Change to match value of encoder disk
 
 long previousTime = 0;
 float elapsedTime;
@@ -127,17 +128,13 @@ void setup() {
 }
 
 void loop() {
-  forwards(200);
-  delay(100);
-  turnDegreesLeft(180);
-  delay(100);
-  turnDegreesRight(180);
-  backwards(200);
-  delay(100);
-}
+  driveDistanceForwards(100);
+  while(1);
+  }
 
+// interrupt function
 void count(){
-  distance_pulses++;
+  distancePulses++;
 }
 
 #pragma region Driversfunctions
@@ -228,8 +225,19 @@ void turnDegreesRight(int target){
   stop();
 }
 
-void driveDistanceForwards(int targetDistance){
-  
+void driveDistanceForwards(int targetDistance){ // target distance in cm
+  distancePulses = 0;
+  const int targetPulses = (targetDistance / 38.5) * 20;
+  Serial.println(targetPulses);
+  forwards(127);
+  while(targetPulses > distancePulses){
+    /* debug info
+    Serial.print(targetPulses);
+    Serial.print(",  ");
+    Serial.println(distancePulses);
+    */ 
+  }
+  stop();
 }
 #pragma endregion Driversfunctions
 
