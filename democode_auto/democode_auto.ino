@@ -66,6 +66,7 @@ Adafruit_MPU6050 mpu;
 // voor afstandsmetingen
 volatile unsigned int distancePulses = 0;
 const int diskslots = 20;  // Change to match value of encoder disk
+const int wheelCircumference = 6.6 * 3.14159265;
 
 long previousTime = 0;
 float elapsedTime;
@@ -227,7 +228,7 @@ void turnDegreesRight(int target){
 
 void driveDistanceForwards(int targetDistance){ // target distance in cm
   distancePulses = 0;
-  const int targetPulses = (targetDistance / 38.5) * 20;
+  const int targetPulses = (targetDistance / wheelCircumference) * 20;
   Serial.println(targetPulses);
   forwards(127);
   while(targetPulses > distancePulses){
