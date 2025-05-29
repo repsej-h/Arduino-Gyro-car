@@ -30,7 +30,7 @@ const uint8_t enA_b = 10; // bruin
 const uint8_t in4_b = 13; // groen
 const uint8_t in3_b = 12; // geel
 const uint8_t in2_b = 11; // oranje
-const uint8_t in1_b = A3; // rood
+const int in1_b = A3; // rood -> changed to accommodate photogate
 
 const uint8_t sensorPin = A0; // Analoge pin voor de sensor
 const uint8_t eepromSize = 2; // Grootte van de EEPROM op de Arduino Uno
@@ -127,7 +127,12 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(distance_pulses);
+  forwards(200);
+  delay(100);
+  turnDegreesLeft(180);
+  delay(100);
+  turnDegreesRight(180);
+  backwards(200);
   delay(100);
 }
 
@@ -221,6 +226,10 @@ void turnDegreesRight(int target){
     readGyro();
   }
   stop();
+}
+
+void driveDistanceForwards(int targetDistance){
+  
 }
 #pragma endregion Driversfunctions
 
