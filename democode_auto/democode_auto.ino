@@ -130,6 +130,8 @@ void setup() {
 
 void loop() {
   driveDistanceForwards(100);
+  delay(200);
+  driveDistanceBackwards(100);
   while(1);
   }
 
@@ -228,9 +230,24 @@ void turnDegreesRight(int target){
 
 void driveDistanceForwards(int targetDistance){ // target distance in cm
   distancePulses = 0;
-  const int targetPulses = (targetDistance / wheelCircumference) * 20;
+  const int targetPulses = ((targetDistance / wheelCircumference) * 20 ) - 10;
   Serial.println(targetPulses);
   forwards(127);
+  while(targetPulses > distancePulses){
+    /* debug info
+    Serial.print(targetPulses);
+    Serial.print(",  ");
+    Serial.println(distancePulses);
+    */ 
+  }
+  stop();
+}
+
+void driveDistanceBackwards(int targetDistance){ // target distance in cm
+  distancePulses = 0;
+  const int targetPulses = ((targetDistance / wheelCircumference) * 20 ) - 10;
+  Serial.println(targetPulses);
+  backwards(127);
   while(targetPulses > distancePulses){
     /* debug info
     Serial.print(targetPulses);
