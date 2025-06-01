@@ -131,6 +131,10 @@ void setup() {
 void loop() {
   driveDistanceForwards(100);
   delay(200);
+  turnDegreesRight(90);
+  delay(200);
+  turnDegreesLeft(90);
+  delay(200);
   driveDistanceBackwards(100);
   while(1);
   }
